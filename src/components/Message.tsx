@@ -1,12 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Comments from './Comments';
+import { commentsDBRef, db } from '../../config/firebase';
+
 import { timeStamp } from '@/utils';
-import { commentsDBRef } from '../../../config/firebase';
+import {
+  addDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 
-import { addDoc, getDocs, orderBy, query } from 'firebase/firestore';
-
-type MessageProps = { message: string; messageId: string };
+type MessageProps = {
+  message: string;
+  messageId: string;
+  getMessageList: () => Promise<void>;
+  isUserExist: boolean;
+};
 
 export type Comments = {
   comment: {
@@ -16,11 +28,16 @@ export type Comments = {
   id: string;
 };
 
-const Message = ({ message, messageId }: MessageProps) => {
+const Message = ({
+  message,
+  messageId,
+  getMessageList,
+  isUserExist,
+}: MessageProps) => {
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comments[]>([]);
 
-  const getCommentsList = async () => {
+  const getCommentsList = useCallback(async () => {
     const orderByTimestamp = query(commentsDBRef, orderBy('timeStamp', 'desc'));
     const comments = await getDocs(orderByTimestamp);
     const allOfComments = comments.docs.map((doc) => ({
@@ -32,10 +49,18 @@ const Message = ({ message, messageId }: MessageProps) => {
       return comment.comment.messageId === messageId;
     });
 
-    console.log(filteredComments);
-
     if (!filteredComments) return;
     setComments(filteredComments);
+  }, [messageId]);
+
+  const deleteMessage = async () => {
+    try {
+      const commentDoc = doc(db, 'messages', messageId);
+      await deleteDoc(commentDoc);
+      getMessageList();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const addNewComment = async (message: string) => {
@@ -56,18 +81,24 @@ const Message = ({ message, messageId }: MessageProps) => {
 
   const onSubmitComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     addNewComment(newComment);
     getCommentsList();
   };
 
   useEffect(() => {
     getCommentsList();
-  }, []);
+  }, [getCommentsList]);
 
   return (
     <div className="flex flex-col gap-4 ">
-      <span>{message}</span>
+      <div className="relative">
+        {isUserExist && (
+          <button className="absolute right-0 top-0" onClick={deleteMessage}>
+            x
+          </button>
+        )}
+        <span>{message}</span>
+      </div>
       <form onSubmit={(e) => onSubmitComment(e)}>
         <label className="relative block">
           <button

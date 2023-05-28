@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Inter } from 'next/font/google';
 
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 import { auth } from '../../config/firebase';
 import { signInAnonymously } from 'firebase/auth';
@@ -10,8 +10,8 @@ import { serverTimestamp } from 'firebase/firestore';
 
 import { addRegisteredUserToDB, setUserDataToLocalStorage } from '@/utils';
 import { useRouter } from 'next/router';
-import InputSection from './components/InputSection';
-import MessageButton from './components/MessageButton';
+import InputSection from '../components/InputSection';
+import MessageButton from '../components/MessageButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -37,6 +37,7 @@ export default function Home() {
       await signInAnonymously(auth).then((userCredential) => {
         const user: any = userCredential.user;
         const userId = user.uid;
+
         const userToken = user.accessToken;
         const timeStamp = serverTimestamp();
         const secretKey = userId.substring(0, 6);
