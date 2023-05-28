@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Inter } from 'next/font/google';
 
 import Header from '../components/Header';
@@ -24,13 +24,16 @@ export default function Home() {
     null
   );
 
-  function getDataFromLocalStorage() {
-    const user = localStorage.getItem('username');
-    const secretKey = localStorage.getItem('secretKey');
-    if (!user) return;
-    setUserInLocalStorage(user);
-    setLink(`http://localhost:3000${router.pathname}${secretKey}`);
-  }
+  const getDataFromLocalStorage = useCallback(
+    function getDataFromLocalStorage() {
+      const user = localStorage.getItem('username');
+      const secretKey = localStorage.getItem('secretKey');
+      if (!user) return;
+      setUserInLocalStorage(user);
+      setLink(`http://localhost:3000${router.pathname}${secretKey}`);
+    },
+    [router.pathname]
+  );
 
   const signIn = async () => {
     try {
@@ -62,7 +65,7 @@ export default function Home() {
 
   useEffect(() => {
     getDataFromLocalStorage();
-  }, []);
+  }, [getDataFromLocalStorage]);
 
   return (
     <div className={`min-h-screen  ${inter.className}`}>
