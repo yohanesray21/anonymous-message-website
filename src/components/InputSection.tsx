@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ShareButtons from './ShareButton';
 
 type InputSectionProps = {
   link: string;
@@ -50,6 +51,8 @@ const InputSection = ({ link }: InputSectionProps) => {
           Copied Link
         </span>
       )}
+
+      <ShareButtons link={link} />
     </>
   );
 };

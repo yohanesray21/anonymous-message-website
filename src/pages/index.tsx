@@ -15,7 +15,7 @@ import MessageButton from '../components/MessageButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Home() {
+export default function Home({ fullRoute }: { fullRoute: string }) {
   const router = useRouter();
 
   const [username, setUsername] = useState('');
@@ -30,9 +30,9 @@ export default function Home() {
       const secretKey = localStorage.getItem('secretKey');
       if (!user) return;
       setUserInLocalStorage(user);
-      setLink(`http://localhost:3000${router.pathname}${secretKey}`);
+      setLink(`${fullRoute}${router.pathname}${secretKey}`);
     },
-    [router.pathname]
+    [router.pathname, fullRoute]
   );
 
   const signIn = async () => {
@@ -56,7 +56,7 @@ export default function Home() {
         setUserDataToLocalStorage(username, secretKey, userId);
         getDataFromLocalStorage();
       });
-      alert('success');
+      alert('Create account success');
       setUsername('');
     } catch (error) {
       console.error(error);
@@ -117,4 +117,16 @@ export default function Home() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req }: any) {
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const fullRoute = `${protocol}://${host}`;
+
+  return {
+    props: {
+      fullRoute,
+    },
+  };
 }

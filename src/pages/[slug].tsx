@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { Inter } from 'next/font/google';
 
 import Footer from '../components/Footer';
@@ -24,9 +23,11 @@ export type Messages = {
 
 type DetailMessageProps = {
   slug: string;
+  username: string;
+  fullRoute: string;
 };
 
-const DetailMessage = ({ slug }: DetailMessageProps) => {
+const DetailMessage = ({ slug, username, fullRoute }: DetailMessageProps) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Messages[]>([]);
   const [isUserExist, setIsUserExist] = useState(false);
@@ -90,13 +91,15 @@ const DetailMessage = ({ slug }: DetailMessageProps) => {
 
           <div className="bg-slate-300 py-5 px-4 flex flex-col gap-3 rounded-sm">
             {isUserExist ? (
-              <InputSection link={`http://localhost:3000/${slug}`} />
+              <InputSection link={`${fullRoute}/${slug}`} />
             ) : (
               <div className="flex flex-col gap-3">
                 <h1 className="text-center text-lg">SEND SECRET MESSAGE TO</h1>
-                <span className="text-center text-lg font-bold">Yohanes</span>
+                <span className="text-center text-lg font-bold">
+                  {username}
+                </span>
                 <span className="text-center text-lg ">
-                  Yohanes will never know who sent this message
+                  {username} will never know who sent this message
                 </span>
 
                 <form
@@ -125,7 +128,7 @@ const DetailMessage = ({ slug }: DetailMessageProps) => {
           <div className="bg-slate-300 py-5 px-4 flex flex-col gap-3 rounded-sm">
             <div className="py-5 px-4 bg-slate-100 flex flex-col gap-6 rounded-sm">
               <h3>
-                Timeline of <span className="font-bold">Test</span>
+                Timeline of <span className="font-bold">{username}</span>
               </h3>
               {messages.length > 0 &&
                 messages.map((message, index) => {
@@ -149,13 +152,8 @@ const DetailMessage = ({ slug }: DetailMessageProps) => {
   );
 };
 
-export const getServerSideProps = async ({
-  params,
-}: {
-  params: { slug: string };
-}) => {
+export const getServerSideProps = async ({ req, params }: any) => {
   const { slug } = params;
-  console.log(params);
 
   const secretKey = query(usersDBRef, where('secretKey', '==', slug));
   const user = await getDocs(secretKey);
@@ -170,9 +168,15 @@ export const getServerSideProps = async ({
     };
   }
 
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const fullRoute = `${protocol}://${host}`;
+
   return {
     props: {
       slug,
+      username: allOfUser[0].username,
+      fullRoute,
     },
   };
 };

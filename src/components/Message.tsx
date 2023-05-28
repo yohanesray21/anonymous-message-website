@@ -121,7 +121,6 @@ const Message = ({
             value={newComment}
             onChange={(e) => {
               setNewComment(e.target.value);
-              console.log(newComment);
             }}
             required
           />
