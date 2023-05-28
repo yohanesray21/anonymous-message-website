@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import Comments from './Comments';
-import { commentsDBRef, db } from '../../config/firebase';
+import { commentsDBRef, db } from '../firebase';
 
 import { timeStamp } from '@/utils';
 import {

@@ -1,6 +1,6 @@
 import { deleteDoc, doc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { commentsDBRef, db } from '../../config/firebase';
+import { commentsDBRef, db } from '../firebase';
 import { getUserId } from '@/utils';
 
 type CommentProps = {

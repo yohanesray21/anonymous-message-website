@@ -1,5 +1,5 @@
 import { FieldValue, addDoc, serverTimestamp } from 'firebase/firestore';
-import { usersDBRef } from '../../config/firebase';
+import { usersDBRef } from '../firebase';
 
 export async function addRegisteredUserToDB(
   username: string,

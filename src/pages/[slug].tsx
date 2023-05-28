@@ -8,7 +8,7 @@ import Message from '../components/Message';
 import InputSection from '../components/InputSection';
 
 import { addDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
-import { messagesDBRef, usersDBRef } from '../../config/firebase';
+import { messagesDBRef, usersDBRef } from '../firebase';
 
 import { getUserId, timeStamp } from '@/utils';
 
