@@ -3,7 +3,7 @@ import React from 'react';
 
 const Header = () => {
   return (
-    <header className="flex justify-center items-center p-2.5 border shadow-md">
+    <div className="flex justify-center items-center p-2.5 border shadow-md">
       <Link href="..">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@ const Header = () => {
 
         <h1 className="font-bold ">Anonymous Message</h1>
       </div>
-    </header>
+    </div>
   );
 };
 
