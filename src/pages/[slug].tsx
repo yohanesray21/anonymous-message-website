@@ -130,6 +130,9 @@ const DetailMessage = ({ slug, username, fullRoute }: DetailMessageProps) => {
               <h3>
                 Timeline of <span className="font-bold">{username}</span>
               </h3>
+              {messages.length === 0 && (
+                <span className="text-center">No Message</span>
+              )}
               {messages.length > 0 &&
                 messages.map((message, index) => {
                   return (

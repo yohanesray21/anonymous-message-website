@@ -19,6 +19,7 @@ const InputSection = ({ link }: InputSectionProps) => {
 
   return (
     <>
+      <span className="text-center font-bold">Share To Your Social Media</span>
       <div className="flex gap-2 ">
         <input
           type="text"
